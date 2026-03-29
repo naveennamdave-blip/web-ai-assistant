@@ -1,17 +1,7 @@
 flask
 flask-socketio
-speechrecognition
 gtts
 groq
 eventlet
 gunicorn
-pyaudio
-transformers
-torch
 python-dotenv
-# subprocess  # Built-in
-# json  # Built-in
-# os  # Built-in
-# tempfile  # Built-in
-
-# http://127.0.0.1:5000/  
