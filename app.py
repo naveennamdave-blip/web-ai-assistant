@@ -115,38 +115,7 @@ def handle_text_query(data):
     )
 
 if __name__ == "__main__":
-    print("Device set to use cpu")
-    socketio.run(app, host="0.0.0.0", port=5000, debug=True)
+    port = int(os.environ.get("PORT", 5000))   # ← Render sets PORT automatically
+    socketio.run(app, host="0.0.0.0", port=port, debug=False)  # ← debug=False
 
 
-# Here are 10 questions with brief answers:
-
-# 1. **What is the largest planet in our solar system?** 
-# Answer: Jupiter.
-
-# 2. **Which element has the symbol 'H' in the periodic table?** 
-# Answer: Hydrogen.
-
-# 3. **What is the largest mammal on Earth?** 
-# Answer: Blue whale.
-
-# 4. **Who painted the famous painting 'The Starry Night'?** 
-# Answer: Vincent van Gogh.
-
-# 5. **What is the chemical symbol for gold?** 
-# Answer: Au.
-
-# 6. **Which river is the longest in the world?** 
-# Answer: Nile River.
-
-# 7. **What is the largest living species of lizard?** 
-# Answer: Komodo dragon.
-
-# 8. **Who wrote the famous book 'To Kill a Mockingbird'?** 
-# Answer: Harper Lee.
-
-# 9. **What is the process called when plants make their own food?** 
-# Answer: Photosynthesis.
-
-# 10. **What is the largest state in the United States by land area?** 
-# Answer: Alaska.
