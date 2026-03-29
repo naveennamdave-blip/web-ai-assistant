@@ -2,13 +2,14 @@
 import os
 import base64
 from datetime import datetime
-
+from dotenv import load_dotenv
 
 from flask import Flask, render_template
 from flask_socketio import SocketIO, emit
 from gtts import gTTS
 from groq import Groq
 
+load_dotenv()
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "secret-key"
 socketio = SocketIO(app, cors_allowed_origins="*")
