@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="description" content="AI Voice Assistant — Ask questions via voice or text and get intelligent answers with a 3D avatar." />
+    <meta name="theme-color" content="#0b0e1a" />
+    <title>AI Voice Assistant</title>
+
+    <!-- Design System CSS -->
+    <link rel="stylesheet" href="/static/style.css" />
+
+    <!-- SOCKET.IO -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
+
+    <!-- THREE + GLTF import map -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.158.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.158.0/examples/jsm/"
+            }
+        }
+    </script>
+</head>
+<body>
+    <div id="app">
+        <!-- LEFT — Chat Panel -->
+        <div id="left-panel">
+            <div id="header-row">
+                <div>
+                    <h1 id="left-header">AI Assistant</h1>
+                    <p id="left-subtitle">Ask anything — voice or text.</p>
+                </div>
+                <button id="clear-chat-btn">🧹 Clear</button>
+            </div>
+
+            <div id="chat-window">
+                <div id="chat-messages">
+                    <div class="system-msg">👋 Hi, I'm your AI assistant. How can I help you today?</div>
+                </div>
+                <!-- Typing indicator -->
+                <div id="typing-indicator">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+            </div>
+
+            <div id="bottom-controls">
+                <button id="listen-btn" aria-label="Start voice input"></button>
+                <div id="text-input-container">
+                    <input type="text" id="query-input" placeholder="Type your question here..." autocomplete="off" />
+                    <button id="text-submit">Send</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="drag-divider"></div>
+
+        <!-- RIGHT — 3D Avatar -->
+        <div id="right-panel">
+            <!-- Status Badge -->
+            <div id="status-badge">
+                <span class="status-dot"></span>
+                <span>Online</span>
+            </div>
+
+            <button id="stop-btn">⏹ Stop</button>
+
+            <!-- Wave canvas (behind) -->
+            <canvas id="wave-canvas" aria-hidden="true"></canvas>
+
+            <!-- Three.js container -->
+            <div id="container"></div>
+
+            <div id="mic-indicator"></div>
+
+            <div id="sound-bars">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DRAG LOGIC -->
+    <script>
+        const leftPanel = document.getElementById("left-panel");
+        const divider   = document.getElementById("drag-divider");
+        const app       = document.getElementById("app");
+
+        let isDragging = false;
+
+        divider.addEventListener("mousedown", () => {
+            isDragging = true;
+            divider.classList.add("active");
+            document.body.style.userSelect = "none";
+        });
+
+        window.addEventListener("mouseup", () => {
+            if (!isDragging) return;
+            isDragging = false;
+            divider.classList.remove("active");
+            document.body.style.userSelect = "auto";
+        });
+
+        window.addEventListener("mousemove", (e) => {
+            if (!isDragging) return;
+            const appRect = app.getBoundingClientRect();
+            let newWidth = e.clientX - appRect.left;
+            const minWidth = 280;
+            const maxWidth = window.innerWidth - 320;
+            if (newWidth < minWidth) newWidth = minWidth;
+            if (newWidth > maxWidth) newWidth = maxWidth;
+            leftPanel.style.width = newWidth + "px";
+            // notify wave canvas and three.js to resize
+            window.dispatchEvent(new Event('wave-resize'));
+            window.dispatchEvent(new Event('three-resize'));
+        });
+    </script>
+
+    <!-- MAIN 3D / SOCKET LOGIC -->
+    <script type="module" src="/static/assistant.js"></script>
+</body>
+</html>
